@@ -158,7 +158,7 @@ GITHUB_REF=${GITHUB_REF:-stable-ocp-3.5}
 GITHUB_URI=https://github.com/$GITHUB_ACCOUNT/coolstore-microservice.git
 
 # maven 
-MAVEN_MIRROR_URL=${ARG_MAVEN_MIRROR_URL:-http://nexus.$PRJ_CI.svc.cluster.local:8081/content/groups/public}
+MAVEN_MIRROR_URL=${ARG_MAVEN_MIRROR_URL:-http://nexus-$PRJ_CI.apps.ocp.hcleps.com/content/groups/public}
 
 GOGS_USER=developer
 GOGS_PASSWORD=developer
@@ -433,7 +433,7 @@ EOM
 # Deploy Jenkins
 function deploy_jenkins() {
   echo_header "Deploying Jenkins..."
-  oc new-app jenkins-ephemeral -l app=jenkins -p MEMORY_LIMIT=1Gi -n $PRJ_CI
+  oc new-app jenkins-ephemeral -l app=jenkins -p MEMORY_LIMIT=1Gi -n $PRJ_CI -p NAMESPACE=scaling -p JENKINS_IMAGE_STREAM_TAG=jenkins-blueocean:latest
   sleep 2
   oc set resources dc/jenkins --limits=cpu=1,memory=2Gi --requests=cpu=200m,memory=1Gi -n $PRJ_CI
 }
